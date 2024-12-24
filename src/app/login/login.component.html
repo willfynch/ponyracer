@@ -1,0 +1,27 @@
+<h1>Log in</h1>
+
+<form [formGroup]="loginForm" (ngSubmit)="authenticate()">
+  <div class="mb-3">
+    <label for="login" class="form-label">Login</label>
+    <input type="text" id="login" class="form-control" formControlName="login" />
+
+    @if (loginForm.controls['login'].dirty && loginForm.controls['login'].hasError('required')) {
+      <div class="invalid-feedback">Login is required</div>
+    }
+  </div>
+
+  <div class="mb-3">
+    <label for="login" class="form-label">Password</label>
+    <input type="password" id="login" class="form-control" formControlName="password" />
+
+    @if (loginForm.controls['password'].dirty && loginForm.controls['password'].hasError('required')) {
+      <div class="invalid-feedback">Password is required</div>
+    }
+  </div>
+
+  <button [disabled]="loginForm.invalid" type="submit" class="btn btn-primary mb-3">Log in</button>
+
+  @if (authenticationFailed()) {
+    <div class="alert alert-danger mb-3">Nope, try again.</div>
+  }
+</form>
