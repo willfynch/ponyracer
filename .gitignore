@@ -43,3 +43,7 @@ Thumbs.db
 results
 cypress/screenshots
 cypress/downloads
+
+documentation
+documentation/*
+bun.lockb

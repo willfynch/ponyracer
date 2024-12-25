@@ -5,7 +5,7 @@
     <label for="login" class="form-label">Login</label>
     <input type="text" id="login" class="form-control" formControlName="login" />
 
-    @if (loginForm.controls['login'].dirty && loginForm.controls['login'].hasError('required')) {
+    @if (loginCtrl.dirty && loginCtrl.hasError('required')) {
       <div class="invalid-feedback">Login is required</div>
     }
   </div>
@@ -14,7 +14,7 @@
     <label for="login" class="form-label">Password</label>
     <input type="password" id="login" class="form-control" formControlName="password" />
 
-    @if (loginForm.controls['password'].dirty && loginForm.controls['password'].hasError('required')) {
+    @if (passwordCtrl.dirty && passwordCtrl.hasError('required')) {
       <div class="invalid-feedback">Password is required</div>
     }
   </div>

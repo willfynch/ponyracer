@@ -5,4 +5,5 @@ export interface UserModel {
   id?: number;
   token?: string;
   registrationInstant?: string;
+  birthYear?: number;
 }

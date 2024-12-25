@@ -14,11 +14,14 @@ export class LoginComponent {
   userService = inject(UserService);
   router = inject(Router);
 
+  loginCtrl = this.formBuilder.control('', Validators.required);
+  passwordCtrl = this.formBuilder.control('', Validators.required);
+
   authenticationFailed = signal(false);
 
   loginForm: FormGroup = this.formBuilder.group({
-    login: ['', Validators.required],
-    password: ['', Validators.required]
+    login: this.loginCtrl,
+    password: this.passwordCtrl
   });
 
   authenticate(): void {

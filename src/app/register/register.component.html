@@ -1,0 +1,76 @@
+<div class="col-md-6 offset-md-3">
+  <h1>Register</h1>
+  <form [formGroup]="registerForm" (ngSubmit)="register()">
+    <div class="mb-3">
+      <label [class.text-danger]="loginCtrl.dirty && loginCtrl.errors" for="login" class="form-label">Login</label>
+      <input [class.is-invalid]="loginCtrl.dirty && loginCtrl.errors" type="text" id="login" class="form-control" formControlName="login" />
+
+      @if (loginCtrl.dirty && loginCtrl.hasError('required')) {
+        <div id="login-required-error" class="invalid-feedback">Login is required</div>
+      }
+      @if (loginCtrl.dirty && loginCtrl.hasError('minlength')) {
+        <div id="login-length-error" class="invalid-feedback">Your login should be at least 3 characters</div>
+      }
+    </div>
+
+    <div [formGroup]="passwordFormGroup">
+      <div class="mb-3">
+        <label [class.text-danger]="passwordCtrl.dirty && passwordCtrl.invalid && passwordCtrl.errors" for="password" class="form-label"
+          >Password</label
+        >
+        <input
+          [class.is-invalid]="passwordCtrl.dirty && passwordCtrl.invalid"
+          type="password"
+          id="password"
+          class="form-control"
+          formControlName="password"
+        />
+        @if (passwordCtrl.dirty && passwordCtrl.hasError('required')) {
+          <div id="password-required-error" class="invalid-feedback">Password is required</div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label [class.text-danger]="confirmPasswordCtrl.dirty && confirmPasswordCtrl.invalid" for="confirmPassword" class="form-label"
+          >Confirm password</label
+        >
+        <input
+          [class.is-invalid]="confirmPasswordCtrl.dirty && confirmPasswordCtrl.invalid"
+          type="password"
+          id="confirmPassword"
+          class="form-control"
+          formControlName="confirmPassword"
+        />
+        @if (confirmPasswordCtrl.dirty && confirmPasswordCtrl.hasError('required')) {
+          <div id="confirm-password-required-error" class="invalid-feedback">Password confirmation is required</div>
+        }
+      </div>
+      @if ((passwordCtrl.dirty || confirmPasswordCtrl.dirty) && passwordMatch().matchingError) {
+        <div id="password-matching-error" class="invalid-feedback">Your password does not match</div>
+      }
+    </div>
+
+    <div class="mb-3 w-25">
+      <label [class.text-danger]="birthYearCtrl.dirty && birthYearCtrl.errors" for="birthYear" class="form-label">Birthyear</label>
+      <input
+        [class.is-invalid]="birthYearCtrl.dirty && birthYearCtrl.errors"
+        type="number"
+        id="birthYear"
+        class="form-control"
+        formControlName="birthYear"
+      />
+      @if (birthYearCtrl.dirty && birthYearCtrl.hasError('required')) {
+        <div id="birth-year-required-error" class="invalid-feedback">Birth year is required</div>
+      }
+      @if (birthYearCtrl.dirty && (birthYearCtrl.hasError('min') || birthYearCtrl.hasError('max'))) {
+        <div id="birth-year-invalid-error" class="invalid-feedback">This is not a valid year</div>
+      }
+    </div>
+
+    <button [disabled]="registerForm.invalid" type="submit" class="btn btn-primary mb-3">Let's go !</button>
+  </form>
+
+  @if (registrationFailed()) {
+    <div id="registration-error" class="alert alert-danger mb-3">Try again with another login.</div>
+  }
+</div>
