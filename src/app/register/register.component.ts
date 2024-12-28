@@ -1,28 +1,30 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+import { BirthYearInputComponent } from '../birth-year-input/birth-year-input.component';
 
 @Component({
   selector: 'pr-register',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, BirthYearInputComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  private readonly formBuilder = inject(FormBuilder);
+  private readonly formBuilder = inject(NonNullableFormBuilder);
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
 
   registrationFailed = signal(false);
 
-  loginCtrl = this.formBuilder.control('', Validators.compose([Validators.required, Validators.minLength(3)]));
-  birthYearCtrl = this.formBuilder.control(
-    null as null | number,
+  loginCtrl = new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(3)]));
+  birthYearCtrl = new FormControl<null | number>(
+    null,
     Validators.compose([Validators.required, Validators.min(1900), Validators.max(new Date().getFullYear())])
   );
-  passwordCtrl = this.formBuilder.control('', Validators.required);
-  confirmPasswordCtrl = this.formBuilder.control('', Validators.required);
+  passwordCtrl = new FormControl<string>('', Validators.required);
+  confirmPasswordCtrl = new FormControl<string>('', Validators.required);
+
   passwordFormGroup = this.formBuilder.group({
     password: this.passwordCtrl,
     confirmPassword: this.confirmPasswordCtrl
@@ -34,9 +36,7 @@ export class RegisterComponent {
   });
 
   register() {
-    if (!this.loginCtrl.value || !this.passwordCtrl.value || !this.birthYearCtrl.value) return;
-
-    this.userService.register(this.loginCtrl.value, this.passwordCtrl.value, this.birthYearCtrl.value).subscribe({
+    this.userService.register(this.loginCtrl.value!, this.passwordCtrl.value!, this.birthYearCtrl.value!).subscribe({
       next: () => {
         this.router.navigateByUrl('/');
       },
