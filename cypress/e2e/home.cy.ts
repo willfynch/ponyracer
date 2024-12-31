@@ -12,6 +12,10 @@ describe('Ponyracer', () => {
     cy.intercept('GET', 'api/races?status=PENDING', []).as('getRaces');
   }
 
+  function storeUserInLocalStorage(): void {
+    localStorage.setItem('rememberMe', JSON.stringify(user));
+  }
+
   beforeEach(() => {
     startBackend();
     localStorage.setItem('preferred-lang', 'en');
@@ -35,14 +39,9 @@ describe('Ponyracer', () => {
   });
 
   it('should display a navbar collapsed on small screen', () => {
+    storeUserInLocalStorage();
     cy.viewport('iphone-6+');
-    cy.visit('/login');
-
-    cy.get('input').first().type('cedric');
-    cy.get('input[type=password]').type('password');
-    cy.get('form > button').click();
-    cy.wait('@authenticateUser');
-
+    cy.visit('/');
     cy.contains(navbarBrand, 'PonyRacer');
     cy.get(navbarLink).should('not.be.visible');
 
@@ -56,29 +55,21 @@ describe('Ponyracer', () => {
   });
 
   it('should display the logged in user in navbar and logout', () => {
-    cy.visit('/login');
-
-    cy.get('input').first().type('cedric');
-    cy.get('input[type=password]').type('password');
-    cy.get('form > button').click();
-    cy.wait('@authenticateUser');
-
-    cy.location('pathname').should('eq', '/');
-    cy.get(navbarLink).contains('Races').should('have.attr', 'href', '/races');
+    storeUserInLocalStorage();
+    cy.visit('/races');
+    cy.wait('@getRaces');
 
     // user stored should be displayed
     cy.get('#current-user').should('contain', 'cedric').and('contain', '1,000');
-
-    cy.get('.btn-primary').contains('Races').should('have.attr', 'href', '/races');
-
-    cy.get('.btn-primary').click();
-    cy.wait('@getRaces');
 
     // logout
     cy.get('span.fa.fa-power-off').click();
 
     // should be redirected to home page
-    cy.location('pathname').should('eq', '/');
+    cy.location('pathname')
+      .should('eq', '/')
+      // and localStorage should be empty
+      .and(() => expect(localStorage.getItem('rememberMe')).to.eq(null));
     cy.get(navbarLink).should('not.exist');
 
     // user is not displayed in navbar
