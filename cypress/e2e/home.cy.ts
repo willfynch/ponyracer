@@ -1,4 +1,22 @@
 describe('Ponyracer', () => {
+  const user = {
+    id: 1,
+    login: 'cedric',
+    money: 1000,
+    registrationInstant: '2015-12-01T11:00:00Z',
+    token: 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.5cAW816GUAg3OWKWlsYyXI4w3fDrS5BpnmbyBjVM7lo'
+  };
+
+  function startBackend(): void {
+    cy.intercept('POST', 'api/users/authentication', user).as('authenticateUser');
+    cy.intercept('GET', 'api/races?status=PENDING', []).as('getRaces');
+  }
+
+  beforeEach(() => {
+    startBackend();
+    localStorage.setItem('preferred-lang', 'en');
+  });
+
   it('should display title on home page', () => {
     cy.visit('/');
     cy.contains('h1', 'Ponyracer');
@@ -13,12 +31,18 @@ describe('Ponyracer', () => {
   it('should display a navbar', () => {
     cy.visit('/');
     cy.get(navbarBrand).contains('PonyRacer').should('have.attr', 'href', '/');
-    cy.get(navbarLink).contains('Races').should('have.attr', 'href', '/races');
+    cy.get(navbarLink).should('not.exist');
   });
 
   it('should display a navbar collapsed on small screen', () => {
     cy.viewport('iphone-6+');
-    cy.visit('/');
+    cy.visit('/login');
+
+    cy.get('input').first().type('cedric');
+    cy.get('input[type=password]').type('password');
+    cy.get('form > button').click();
+    cy.wait('@authenticateUser');
+
     cy.contains(navbarBrand, 'PonyRacer');
     cy.get(navbarLink).should('not.be.visible');
 
@@ -29,5 +53,38 @@ describe('Ponyracer', () => {
     // toggle the navbar again
     cy.get('.navbar-toggler').click();
     cy.get(navbarLink).should('not.be.visible');
+  });
+
+  it('should display the logged in user in navbar and logout', () => {
+    cy.visit('/login');
+
+    cy.get('input').first().type('cedric');
+    cy.get('input[type=password]').type('password');
+    cy.get('form > button').click();
+    cy.wait('@authenticateUser');
+
+    cy.location('pathname').should('eq', '/');
+    cy.get(navbarLink).contains('Races').should('have.attr', 'href', '/races');
+
+    // user stored should be displayed
+    cy.get('#current-user').should('contain', 'cedric').and('contain', '1,000');
+
+    cy.get('.btn-primary').contains('Races').should('have.attr', 'href', '/races');
+
+    cy.get('.btn-primary').click();
+    cy.wait('@getRaces');
+
+    // logout
+    cy.get('span.fa.fa-power-off').click();
+
+    // should be redirected to home page
+    cy.location('pathname').should('eq', '/');
+    cy.get(navbarLink).should('not.exist');
+
+    // user is not displayed in navbar
+    cy.get('#current-user').should('not.exist');
+
+    // and home page offers the login link
+    cy.get('.btn-primary').contains('Login').should('have.attr', 'href', '/login');
   });
 });

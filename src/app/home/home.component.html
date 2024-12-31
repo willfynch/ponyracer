@@ -3,6 +3,10 @@
 </div>
 
 <div class="text-center d-flex justify-content-center gap-2">
-  <a class="btn btn-primary" [routerLink]="['/login']">Login</a>
-  <a class="btn btn-primary" [routerLink]="['/register']">Register</a>
+  @if (!user()) {
+    <a class="btn btn-primary" [routerLink]="['/login']">Login</a>
+    <a class="btn btn-primary" [routerLink]="['/register']">Register</a>
+  } @else {
+    <a class="btn btn-primary" [routerLink]="['/races']">Races</a>
+  }
 </div>

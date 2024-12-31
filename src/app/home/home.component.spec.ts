@@ -1,13 +1,20 @@
+import { signal, WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { UserModel } from '../models/user.model';
+import { UserService } from '../user.service';
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
-  beforeEach(() =>
+  let currentUser: WritableSignal<UserModel | undefined>;
+
+  beforeEach(() => {
+    currentUser = signal(undefined);
+    const userService = jasmine.createSpyObj<UserService>('UserService', [], { currentUser });
     TestBed.configureTestingModule({
-      providers: [provideRouter([])]
-    })
-  );
+      providers: [provideRouter([]), { provide: UserService, useValue: userService }]
+    });
+  });
 
   it('display the title and quote', () => {
     const fixture = TestBed.createComponent(HomeComponent);
@@ -41,5 +48,18 @@ describe('HomeComponent', () => {
       .withContext('You should have an `a` element to display the link to the register page. Maybe you forgot to use `routerLink`?')
       .not.toBeNull();
     expect(buttonRegister.textContent).withContext('The link should have a text').toContain('Register');
+  });
+
+  it('should display only a link to go the races page if logged in', () => {
+    const fixture = TestBed.createComponent(HomeComponent);
+    fixture.detectChanges();
+
+    currentUser.set({ login: 'cedric' } as UserModel);
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    const button = element.querySelector('a[href="/races"]')!;
+    expect(button).withContext('The link should lead to the races if the user is logged').not.toBeNull();
+    expect(button.textContent).withContext('The first link should lead to the races if the user is logged').toContain('Races');
   });
 });
