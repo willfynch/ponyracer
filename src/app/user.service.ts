@@ -2,12 +2,13 @@ import { effect, inject, Injectable, signal } from '@angular/core';
 import { UserModel } from './models/user.model';
 import { Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  private url = 'https://ponyracer.ninja-squad.com';
+  private url = environment.baseUrl;
   private http = inject(HttpClient);
 
   private user = signal<UserModel | undefined>(this.retrieveUser());
