@@ -1,0 +1,21 @@
+@if (raceModel() !== undefined) {
+  <div>
+    <h1>{{ raceModel()?.name }}</h1>
+    <p>{{ raceModel()!.startInstant | fromNow }}</p>
+    <div class="row">
+      @for (pony of raceModel()?.ponies; track pony.id) {
+        <div [class.selected]="isPonySelected(pony)" class="col-12 col-md-2">
+          <pr-pony (ponyClicked)="betOnPony($event)" [ponyModel]="pony" />
+        </div>
+      }
+    </div>
+
+    @if (betFailed()) {
+      <div class="alert alert-danger alert-dismissible">
+        <button (click)="betFailed.set(false)" type="button" class="btn-close" aria-label="Close"></button>
+
+        The race is already started or finished
+      </div>
+    }
+  </div>
+}

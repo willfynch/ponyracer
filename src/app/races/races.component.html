@@ -1,5 +1,6 @@
 @for (race of races(); track race.id) {
   <div>
     <pr-race [raceModel]="race" />
+    <a role="button" class="btn btn-primary" [routerLink]="[race.id]">Bet on {{ race.name }}</a>
   </div>
 }

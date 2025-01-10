@@ -12,4 +12,16 @@ export class RaceService {
   list(): Observable<RaceModel[]> {
     return this.http.get<RaceModel[]>(this.apiUrl + '/api/races?status=PENDING');
   }
+
+  bet(raceId: number, ponyId: number): Observable<void> {
+    return this.http.post<void>(this.apiUrl + `/api/races/${raceId}/bets`, { ponyId: ponyId });
+  }
+
+  cancelBet(raceId: number): Observable<void> {
+    return this.http.delete<void>(this.apiUrl + `/api/races/${raceId}/bets`);
+  }
+
+  get(id: number): Observable<RaceModel> {
+    return this.http.get<RaceModel>(this.apiUrl + `/api/races/${id}`);
+  }
 }
