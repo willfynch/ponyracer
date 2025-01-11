@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { RaceModel } from './models/race.model';
+import { interval, map, Observable, take } from 'rxjs';
+import { LiveRaceModel, RaceModel } from './models/race.model';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
 
@@ -23,5 +23,51 @@ export class RaceService {
 
   get(id: number): Observable<RaceModel> {
     return this.http.get<RaceModel>(this.apiUrl + `/api/races/${id}`);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  live(raceId: number): Observable<LiveRaceModel> {
+    const positions = interval(1000);
+
+    return positions.pipe(
+      take(101),
+      map(position => {
+        return {
+          ponies: [
+            {
+              id: 1,
+              name: 'Superb Runner',
+              color: 'BLUE',
+              position: position
+            },
+            {
+              id: 2,
+              name: 'Awesome Fridge',
+              color: 'GREEN',
+              position: position
+            },
+            {
+              id: 3,
+              name: 'Great Bottle',
+              color: 'ORANGE',
+              position: position
+            },
+            {
+              id: 4,
+              name: 'Little Flower',
+              color: 'YELLOW',
+              position: position
+            },
+            {
+              id: 5,
+              name: 'Nice Rock',
+              color: 'PURPLE',
+              position: position
+            }
+          ],
+          status: 'RUNNING'
+        };
+      })
+    );
   }
 }

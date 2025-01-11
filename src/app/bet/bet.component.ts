@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { RaceModel } from '../models/race.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable, startWith, Subject, switchMap } from 'rxjs';
 import { RaceService } from '../race.service';
 import { PonyComponent } from '../pony/pony.component';
@@ -9,7 +9,7 @@ import { PonyModel } from '../models/pony.model';
 
 @Component({
   selector: 'pr-bet',
-  imports: [PonyComponent, FromNowPipe],
+  imports: [PonyComponent, FromNowPipe, RouterLink],
   templateUrl: './bet.component.html',
   styleUrl: './bet.component.css'
 })
