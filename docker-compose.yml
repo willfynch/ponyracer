@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  angular-app:
+    build: .
+    ports:
+      - "4200:4200"
+    # volumes:
+    #   - ./:/ponyracer
+    #   - /ponyracer/node_modules
+    environment:
+      - NODE_ENV=development
+    develop:
+      watch: 
+        - action: sync
+          path: ./src
+          target: /ponyracer/src/
+          ignore:
+            - node_modules/
