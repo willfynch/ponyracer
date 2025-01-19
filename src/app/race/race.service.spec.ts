@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Subject } from 'rxjs';
-import { environment } from '../environments/environment';
-import { RaceService } from './race.service';
-import { WsService } from './ws.service';
-import { LiveRaceModel, RaceModel } from './models/race.model';
+import { environment } from '../../environments/environment';
+import { RaceService } from '../race.service';
+import { WsService } from '../ws.service';
+import { LiveRaceModel, RaceModel } from '../models/race.model';
 
 describe('RaceService', () => {
   let raceService: RaceService;
